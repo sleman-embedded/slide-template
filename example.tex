@@ -8,6 +8,29 @@
 
 \cover
 
-aaa
+%\divider{What is a GPIO}
+
+\begin{frame}{Concepts}
+  \concept{GPIO}{General Purpose Input/Output: a microcontroller pin
+  that firmware configures as a digital input or output.}
+
+  \concept{Register}{A memory-mapped address. Writing to it changes the
+  physical state of a peripheral.}
+\end{frame}
+
+\begin{frame}{Pin modes}
+  \begin{itemize}
+    \item \term{Input:} reads a logic level (button, sensor)
+      \begin{itemize}
+        \item pull-up, pull-down or floating
+      \end{itemize}
+    \item \term{Output:} drives a load (LED, relay, transistor)
+      \begin{itemize}
+        \item push-pull or open-drain
+      \end{itemize}
+    \item \term{Alternate function:} UART, SPI, I2C, PWM
+    \item \term{Analog:} ADC input
+  \end{itemize}
+\end{frame}
 
 \end{document}
