@@ -256,3 +256,51 @@
      \vskip8mm
    \end{frame}}%
 }
+
+%% ------- Section divider ---------------------------------------------
+%% Blue background, section number and title in white.
+%%   \divider{Section title}
+\newcounter{slemansection}
+\newcommand{\divider}[1]{
+  \stepcounter{slemansection}
+  {\setbeamertemplate{background}{
+     \begin{tikzpicture}
+       \useasboundingbox (0,0) rectangle (\paperwidth,\paperheight);
+       \fill[brandblue] (0,0) rectangle (\paperwidth,\paperheight);
+       \node[anchor=east,inner sep=0pt,opacity=0.35]
+         at (\paperwidth+10mm,0.5\paperheight)
+         {\includegraphics[height=1.1\paperheight]{bolt}};
+     \end{tikzpicture}}%
+   \begin{frame}[plain]
+     \vfill
+     \hskip4mm\begin{minipage}{0.7\paperwidth}
+       {\color{brandlight}\bfseries\fontsize{40}{40}\selectfont
+        \two@digits{\value{slemansection}}\par}
+       \vskip4mm
+       {\color{white}\bfseries\fontsize{30}{34}\selectfont #1\par}
+     \end{minipage}
+     \vfill
+   \end{frame}}
+}
+
+%% ------- Closing -----------------------------------------------------
+%%   \closing           -> "See you in the next lesson!"
+%%   \closing[text]     -> custom text
+\newcommand{\closing}[1][See you in the next lesson!]{%
+  {\setbeamertemplate{background}{
+     \begin{tikzpicture}
+       \useasboundingbox (0,0) rectangle (\paperwidth,\paperheight);
+       \fill[brandblue] (0,0) rectangle (\paperwidth,3mm);
+     \end{tikzpicture}}
+   \begin{frame}[plain]
+     \vfill
+     \begin{center}
+       \includegraphics[height=20mm]{logo}\par
+       \vskip10mm
+       {\color{ink}\bfseries\fontsize{26}{30}\selectfont #1\par}
+     \end{center}
+     \vfill
+   \end{frame}}
+}
+
+\endinput
