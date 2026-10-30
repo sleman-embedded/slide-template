@@ -8,7 +8,7 @@
 
 \cover
 
-%\divider{What is a GPIO}
+\divider{What is a GPIO}
 
 \begin{frame}{Concepts}
   \concept{GPIO}{General Purpose Input/Output: a microcontroller pin
@@ -17,6 +17,8 @@
   \concept{Register}{A memory-mapped address. Writing to it changes the
   physical state of a peripheral.}
 \end{frame}
+
+
 
 \begin{frame}{Pin modes}
   \begin{itemize}
@@ -32,5 +34,156 @@
     \item \term{Analog:} ADC input
   \end{itemize}
 \end{frame}
+
+
+
+
+\begin{frame}{Turning on an LED}
+  \begin{enumerate}
+    \item Enable the port clock (\cc{RCC->AHB1ENR})
+    \item Set the pin as output (\cc{GPIOx->MODER})
+    \item Write to the output register (\cc{GPIOx->ODR})
+  \end{enumerate}
+
+  \warn{Without the clock enabled, writes to the port registers are
+  silently ignored.}
+\end{frame}
+
+
+
+\begin{frame}{Image with text}
+  \begin{columns}[c]
+    \begin{column}{0.55\textwidth}
+      \includegraphics[width=\linewidth]{sample}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{itemize}
+        \item Green LED on \cc{PA5}
+        \item Blue button on \cc{PC13}
+        \item On-board ST-LINK
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \source{NUCLEO-F401RE user manual, ST.}
+\end{frame}
+
+
+
+\begin{frame}{Centered figure}
+  \fig{sample}{GPIO block diagram.}
+\end{frame}
+
+
+
+%% \fullscreen{file} or \fullscreen[caption]{file}
+\fullscreen[NUCLEO-F401RE board]{sample}
+
+
+
+\begin{frame}{Three images}
+  \begin{columns}[t]
+    \begin{column}{0.31\textwidth}\centering
+      \includegraphics[width=\linewidth]{sample}\\[3pt]
+      {\footnotesize\color{muted}Push-pull}
+    \end{column}
+    \begin{column}{0.31\textwidth}\centering
+      \includegraphics[width=\linewidth]{sample}\\[3pt]
+      {\footnotesize\color{muted}Open-drain}
+    \end{column}
+    \begin{column}{0.31\textwidth}\centering
+      \includegraphics[width=\linewidth]{sample}\\[3pt]
+      {\footnotesize\color{muted}Input with pull-up}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+\divider{Hands on code}
+
+
+
+%% Code (frame needs [fragile])
+%% \begin{code}[listings options]{file name}   (empty {} = no bar)
+%% Fits ~11 lines at the default size; for longer snippets pass
+%% [basicstyle=\ttfamily\footnotesize\color{codefg}].
+\begin{frame}[fragile]{Bare-metal blink}
+\begin{code}{main.c}
+#include "stm32f4xx.h"
+
+int main(void)
+{
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;    // enable port A clock
+    GPIOA->MODER |= (1U << (5 * 2));        // PA5 as output
+    while (1) {
+        GPIOA->ODR ^= (1U << 5);            // toggle the LED
+        for (volatile uint32_t i = 0; i < 500000; i++);
+    }
+}
+\end{code}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Code and explanation}
+  \begin{columns}[t]
+    \begin{column}{0.56\textwidth}
+\begin{code}{gpio.h}
+typedef struct {
+    volatile uint32_t MODER;
+    volatile uint32_t OTYPER;
+    volatile uint32_t OSPEEDR;
+    volatile uint32_t PUPDR;
+    volatile uint32_t IDR;
+    volatile uint32_t ODR;
+} GPIO_TypeDef;
+\end{code}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{itemize}
+        \item Each field is a 32-bit register
+        \item Field order follows the \term{offsets} in the reference
+          manual
+        \item \cc{volatile}: the compiler cannot optimize the access away
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]{Build and flash}
+\begin{code}[language=bash,numbers=none]{terminal}
+$ make
+$ st-flash write build/blink.bin 0x08000000
+\end{code}
+
+  \tip{Use \cc{numbers=none} for terminal commands.}
+\end{frame}
+
+
+
+
+\begin{frame}{Callouts}
+  \info{Neutral note --- \texttt{\textbackslash info\{...\}}}
+  \tip{Shortcut or good practice --- \texttt{\textbackslash tip\{...\}}}
+  \warn{Something to watch out for --- \texttt{\textbackslash warn\{...\}}}
+  \danger{Something that fries the board --- \texttt{\textbackslash danger\{...\}}}
+\end{frame}
+
+
+
+\begin{frame}{Text highlight}
+  \blue{blue}, \orange{orange}, \red{red}, \green{green},
+  \term{term} and \cc{inline_code()}.
+
+  \medskip
+  Works with \textbf{bold} and \uline{underline}.
+\end{frame}
+
+
+
+\closing
 
 \end{document}
